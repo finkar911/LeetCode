@@ -24,5 +24,15 @@ namespace LeetCodeTests
             var actual = Functions.IsPalindrome(nums);
             Assert.Equal(expected, actual);
         }
+
+        [Theory]
+        [InlineData("III", 3)]
+        [InlineData("LVIII", 58)]
+        [InlineData("MCMXCIV", 1994)]
+        public void Rome_To_Int_Test(string nums, int expected)
+        {
+            var actual = Functions.Roman_to_Int(nums);
+            Assert.Equal(expected, actual);
+        }
     }
 }

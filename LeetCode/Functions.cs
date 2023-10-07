@@ -143,5 +143,41 @@ namespace LeetCode
             return true;
         }
         #endregion
+
+        #region 3 https://leetcode.com/problems/palindrome-number/description/
+        public static int Roman_to_Int(string s) 
+        {
+            ///55ms
+            ///Beats 95.58 %
+            int count = 0;
+            Dictionary<char, int> rom = new Dictionary<char, int>();
+            rom.Add('I',1);
+            rom.Add('V', 5);
+            rom.Add('X', 10);
+            rom.Add('L', 50);
+            rom.Add('C', 100);
+            rom.Add('D', 500);
+            rom.Add('M', 1000);
+            int currMax = 0;
+
+            for (int i = s.Length-1; i >= 0; i--)
+            {          
+                if (rom.ContainsKey(s[i]))
+                {
+                    int toAdd = rom[s[i]];
+                    if (toAdd >= currMax)
+                    {
+                        count += toAdd;
+                        currMax = toAdd;
+                    }
+                    else
+                    {
+                        count -= toAdd;
+                    }
+                }
+            }
+            return count;
+        }
+        #endregion
     }
 }
