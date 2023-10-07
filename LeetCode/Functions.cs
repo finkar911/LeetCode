@@ -81,8 +81,67 @@ namespace LeetCode
         }
         #endregion
 
-        #region 2
+        #region 2 https://leetcode.com/problems/palindrome-number/description/
+        public static bool IsPalindrome_NoString(int x)
+        {
+            ///38ms
+            //Beats 56.46 %
+            ///
+            if (x < 0)
+            {
+                return false;
+            }
+            else if (x < 10)
+            {
+                return true;
+            }
 
+            int summ = 0;
+            int nuber = x;
+
+            summ += nuber % 10;
+
+            if (summ == 0)
+                return false;
+
+            nuber /= 10;
+
+            while (nuber>0)
+            {
+                summ= (nuber % 10) + summ * 10;
+                nuber /= 10;
+            }
+
+            return summ == x;
+        }
+        public static bool IsPalindrome(int x)
+        {
+            ///29ms
+            //Beats 93.07 %
+            string stx = x.ToString();
+            for (int i = 0; i < (stx.Length / 2); i++)
+            {
+                if (stx[i] != stx[stx.Length - 1 - i])
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+        public static bool IsPalindrome1(int x)
+        {
+            ///51ms
+            //Beats 8.59 %
+                        string stx = x.ToString();
+            for (int i = 0; i < stx.Length; i++)
+            {
+                if (stx[i] != stx[stx.Length - 1 - i])
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
         #endregion
     }
 }
