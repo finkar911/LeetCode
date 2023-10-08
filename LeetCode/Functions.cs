@@ -13,9 +13,9 @@ namespace LeetCode
         static public int[] dictionary_two_sum(int[] nums, int target)
         {
             Dictionary<int, int> ht = new Dictionary<int, int>();
-            //1 просто добавляем
+            //add first
             ht.Add(nums[0], 0);
-            //И начинаем с 2го эл-та
+            //and start from 1
             for (int i = 1; i < nums.Length; i++)
             {
                 int weNeed = target - nums[i];
@@ -177,6 +177,18 @@ namespace LeetCode
                 }
             }
             return count;
+        }
+        #endregion
+
+        #region 4 https://leetcode.com/problems/richest-customer-wealth/
+        public static int Ritch_W_Count(int[][] accounts)
+        {
+            int maxSum = 0;
+            foreach (var i in accounts)
+            {
+                maxSum = Math.Max(i.Sum(), maxSum);
+            }
+            return maxSum;
         }
         #endregion
     }
