@@ -40,5 +40,14 @@ namespace LeetCodeTests
             var actual = Functions.Roman_to_Int(nums);
             Assert.Equal(expected, actual);
         }
+
+        [Theory]
+        [InlineData(new int[] { 3, 1, 2, 10, 1 }, new int[] { 3, 4, 6, 16, 17 })]
+        [InlineData(new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20}, new int[] { 1, 3, 6, 10, 15, 21, 28, 36, 45, 55, 66, 78, 91, 105, 120, 136, 153, 171, 190, 210 })]
+        public void RunningSum_Valid_Data_Test(int[] nums, int[] expected)
+        {
+            var actual = Functions.RunningSum(nums);
+            Assert.Equal(expected, actual);
+        }
     }
 }

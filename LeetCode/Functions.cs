@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -189,6 +190,47 @@ namespace LeetCode
                 maxSum = Math.Max(i.Sum(), maxSum);
             }
             return maxSum;
+        }
+        #endregion
+
+        #region 5
+        public static int[] RunningSum(int[] nums)
+        {          
+            Stopwatch stopWatch = new Stopwatch();
+            stopWatch.Start();
+            int[] data = new int[nums.Length];
+            for (int count = 0; count < 100; count++)
+            {
+                ///137ms
+                ///Beats 20.47%
+                ///5ms
+                /*
+                for (int i = 1; i < nums.Length; i++)
+                {
+                    nums[i] += nums[i - 1];
+                }
+                */
+
+
+                ///124ms
+                ///Beats 82.93%
+                ///5ms     
+                
+                int sum = 0;
+                for (int i = 0; i < nums.Length; i++)
+                {
+                    sum += nums[i];
+                    data[i] = sum;
+                }
+                
+
+            }
+            stopWatch.Stop();
+            TimeSpan ts = stopWatch.Elapsed;
+            MessageBox.Show("RunTime " + ts);
+            return data;
+            return nums;
+
         }
         #endregion
     }
