@@ -193,7 +193,7 @@ namespace LeetCode
         }
         #endregion
 
-        #region 5
+        #region 5 https://leetcode.com/problems/running-sum-of-1d-array/description/
         public static int[] RunningSum(int[] nums)
         {          
             Stopwatch stopWatch = new Stopwatch();
@@ -232,6 +232,10 @@ namespace LeetCode
             return nums;
 
         }
+        #endregion
+
+        #region 6 
+
         #endregion
     }
 }
