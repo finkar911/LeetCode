@@ -49,5 +49,15 @@ namespace LeetCodeTests
             var actual = Functions.RunningSum(nums);
             Assert.Equal(expected, actual);
         }
+
+        [Theory]
+        [InlineData(new int[] { 5, 7, 7, 8, 8, 10 }, 8, new int[] { 3, 4 })]
+        [InlineData(new int[] { 5, 7, 7, 8, 8, 10 }, 6, new int[] { -1,-1 })]
+        [InlineData(new int[] { 2, 2, 2, 2, 2, 2 }, 2, new int[] { 0, 5 })]
+        public void Firas_Last_pose_sorted_ArrTest(int[] nums, int target, int[] expected)
+        {
+            var actual = Functions.Firas_Last_pose_sorted_Arr(nums,target);
+            Assert.Equal(expected, actual);
+        }
     }
 }
