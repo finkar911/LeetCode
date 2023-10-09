@@ -59,5 +59,14 @@ namespace LeetCodeTests
             var actual = Functions.Firas_Last_pose_sorted_Arr(nums,target);
             Assert.Equal(expected, actual);
         }
+
+        [Theory]
+        [InlineData(new int[] { 1, 3 }, new int[] { 2 }, 2 )]
+        [InlineData(new int[] { 1, 2 }, new int[] { 3, 4 }, 2.5)]
+        public void Find_Median_Sorted_ArraysTest(int[] nums, int[] target, double expected)
+        {
+            var actual = Functions.Find_Median_Sorted_Arrays(nums, target);
+            Assert.Equal(expected, actual);
+        }
     }
 }

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -295,6 +296,127 @@ namespace LeetCode
             }
             return result;
         }
+        #endregion
+
+        #region 7 https://leetcode.com/problems/median-of-two-sorted-arrays/
+        public static double Find_Median_Sorted_Arrays(int[] nums1, int[] nums2)
+        {
+            //Runtime  87 ms     Beats 89.66 %
+            //Memory   52.8 MB   Beats 22.33 %
+            List<int> ints1 = new List<int>(nums1);
+            List<int> ints2 = new List<int>(nums2);
+
+
+            double ress = 0;
+            int fullLength = nums1.Length + nums2.Length;
+            int[] newArr = new int[fullLength];
+            //int fid = 0;
+            //int sid = 0;
+            for (int i = 0; i < fullLength; i++)
+            {
+                if (ints1.Count > 0 && ints2.Count > 0)
+                {
+                    int f = ints1[0];
+                    int s = ints2[0];
+                    if (f < s)
+                    {
+                        newArr[i] = f;
+                        ints1.RemoveAt(0);
+                    }
+                    else if (f > s)
+                    {
+                        newArr[i] = s;
+                        ints2.RemoveAt(0);
+                    }
+                    else if (f == s)
+                    {
+                        newArr[i] = f;
+                        newArr[i + 1] = s;
+                        ints1.RemoveAt(0);
+                        ints2.RemoveAt(0);
+                        i++;
+                    }
+                }
+                else 
+                {
+                    if (ints1.Count > 0) {
+                        newArr[i] = ints1[0];
+                        ints1.RemoveAt(0);
+                    }
+                    if (ints2.Count > 0)
+                    {
+                        newArr[i] = ints2[0];
+                        ints2.RemoveAt(0);
+                    }
+                }
+                /*
+                int f = nums1[fid];
+                int s = nums2[sid];
+                if (f < s)
+                {
+                    fid++;
+                    newArr[i] = f;
+                }
+                else if (f > s)
+                {
+                    sid++;
+                    newArr[i] = s;
+                }
+                else if (f == s)
+                {
+                    newArr[i] = f;
+                    newArr[i+1] = s;
+                    fid++;
+                    sid++;
+                    i++;
+                }
+                */
+            }
+
+            if (fullLength % 2 == 0)
+            {
+                ress = ((double)(newArr[fullLength / 2 - 1] + newArr[fullLength / 2]) / 2.0 );
+            }
+            else {
+                ress = newArr[fullLength / 2];
+            }
+
+            return ress;
+        }
+        #endregion
+
+        #region 8
+        public static double Find_Median_Sorted_Arrays1(int[] nums1, int[] nums2)
+        {
+            double ress = 0;
+            int[] newArr = new int[nums1.Length + nums2.Length];
+
+
+            return ress;
+        }
+        #endregion
+
+        #region 9
+        public static double Find_Median_Sorted_Arrays2(int[] nums1, int[] nums2)
+        {
+            double ress = 0;
+            int[] newArr = new int[nums1.Length + nums2.Length];
+
+
+            return ress;
+        }
+        #endregion
+
+        #region 10
+
+        #endregion
+
+        #region 11
+
+        #endregion
+
+        #region 12
+
         #endregion
     }
 }
