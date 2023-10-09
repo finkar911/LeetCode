@@ -1,4 +1,5 @@
 using LeetCode;
+using static LeetCode.Functions;
 
 namespace LeetCodeTests
 {
@@ -68,5 +69,14 @@ namespace LeetCodeTests
             var actual = Functions.Find_Median_Sorted_Arrays(nums, target);
             Assert.Equal(expected, actual);
         }
+
+        [Theory]
+        [InlineData(true)]
+        public void MergeKListsTest(bool expected)
+        {
+            var actual = Functions.MergeKLists();
+            Assert.Equal(expected, actual);
+        }
+
     }
 }

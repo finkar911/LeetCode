@@ -6,6 +6,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace LeetCode
 {
@@ -385,14 +386,180 @@ namespace LeetCode
         }
         #endregion
 
-        #region 8
-        public static double Find_Median_Sorted_Arrays1(int[] nums1, int[] nums2)
+        #region 8 https://leetcode.com/problems/merge-k-sorted-lists/description/
+        public static ListNode MergeKLists(ListNode[] lists)
         {
-            double ress = 0;
-            int[] newArr = new int[nums1.Length + nums2.Length];
+            ///90ms Beats 83.02%
+            ///43.60MB Beats 23.40%
 
 
-            return ress;
+            if (lists is null || lists.Length == 0) return null;
+
+            List<int> l = new List<int>();
+
+            foreach (var item in lists)
+            {
+                if (item != null)
+                {
+                    ListNode node = item;
+                    while (node is not null)
+                    {
+                        l.Add(node.val);
+                        node = node.next;
+                    }
+                }
+            }
+
+            l.Sort();
+
+            ListNode result = null;
+
+            for (int ii = l.Count - 1; ii >= 0; ii--)
+            {
+
+                if (result == null)
+                {
+                    result = new ListNode(l[ii]);
+                }
+                else
+                {
+                    result = new ListNode(l[ii], result);
+                }
+
+            }
+
+            return result;
+        }
+
+
+        public static bool MergeKListsDic()
+        {
+            //ListNode[] lists
+            //Runtime  103 ms     Beats 43.66 %
+            //Memory   52.8 MB   Beats 19.33 %
+
+            ListNode[] lists = new ListNode[] {
+            new ListNode(1, new ListNode(3)),
+            new ListNode(1, new ListNode(2,new ListNode(5)))
+            };
+
+            ListNode[] lists1 = new ListNode[] {
+            };
+
+            //if (lists is null || lists.Length == 0) return null;
+
+            Dictionary<int, int> dic = new Dictionary<int, int>();            
+
+            foreach (var item in lists)
+            {
+                if (item != null)
+                {
+                    NodeTodick(dic, item);
+                }
+            }
+
+            dic = dic.OrderBy(obj => obj.Key).ToDictionary(obj => obj.Key, obj => obj.Value);
+
+            string txt = "";
+
+            ListNode result=null;
+
+            for (int ii = dic.Count-1; ii >= 0; ii--)
+            {
+                var item = dic.ElementAt(ii);
+                for (int i = 0; i < item.Value; i++)
+                {
+                    if (result == null)
+                    {
+                        result = new ListNode(item.Key);
+                    }
+                    else {
+                        result = new ListNode(item.Key, result);
+                    }
+                    txt += item.Key + ",";
+                }
+            }
+            MessageBox.Show(txt);
+            /*
+            foreach (var item in dic.Keys) 
+            {
+                for (int i = 0; i < dic[item]; i++)
+                {
+                    txt +=item+",";
+                }
+            }
+
+            MessageBox.Show(txt);
+            */
+            return true;
+        }
+
+        public static void NodeTodick(Dictionary<int, int> dic, ListNode l) {
+                if (!dic.ContainsKey(l.val))
+                {
+                    dic.Add(l.val, 1);
+                }
+                else
+                {
+                    dic[l.val]++;
+                }
+
+                if (l.next != null)
+                {
+                    NodeTodick(dic, l.next);
+                }           
+        }
+
+        public class ListNode
+        {
+            public int val;
+            public ListNode next;
+            public ListNode(int val = 0, ListNode next = null)
+            {
+                this.val = val;
+                this.next = next;
+            }
+
+            public void toList(Dictionary<int, int> dic) {
+                //List<int> list = new List<int>();
+                //list.Add(val);
+                if (!dic.ContainsKey(val))
+                {
+                    dic.Add(val, 1);
+                }
+                else {
+                    dic[val]++;
+                }
+
+                if (next != null) 
+                {
+                    next.toList(dic);
+                }
+                /*
+                ListNode nextToCheck = next;
+                while (nextToCheck != null)
+                {
+                    if (nextToCheck != null)
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        //list.Add(nextToCheck.val);  
+                        if (!dic.ContainsKey(val))
+                        {
+                            dic.Add(val, 1);
+                        }
+                        else
+                        {
+                            dic[val]++;
+                        }
+                        nextToCheck = nextToCheck.next;
+                    }
+                }
+                */
+                //return list;
+            }
         }
         #endregion
 
