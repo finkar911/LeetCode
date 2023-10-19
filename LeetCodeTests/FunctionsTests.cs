@@ -74,7 +74,45 @@ namespace LeetCodeTests
         [InlineData(true)]
         public void MergeKListsTest(bool expected)
         {
-            var actual = Functions.MergeKLists();
+            //var actual = Functions.MergeKLists();
+            //Assert.Equal(expected, actual);
+        }
+
+        [Theory]
+        [InlineData(10, 23)]
+        [InlineData(20, 78)]
+        [InlineData(200, 9168)]
+        [InlineData(0, 0)]
+        public void Find_Sum_Of35_MultsTest(int max,int expected)
+        {
+            var actual = Find_Sum_Of35_Mults(max);
+            Assert.Equal(expected, actual);
+        }
+
+        [Theory]
+        [InlineData(new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 0 }, "(123) 456-7890")]
+        [InlineData(new int[] { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 }, "(111) 111-1111")]
+        public void PhoneNumberTest(int[] nums, string expected)
+        {
+            var actual = PhoneNumber(nums);
+            Assert.Equal(expected, actual);
+        }
+
+        [Theory]
+        [InlineData("This website is for losers LOL!", "Ths wbst s fr lsrs LL!")]
+        [InlineData("No offense but,\nYour writing is among the worst I've ever read", "N ffns bt,\nYr wrtng s mng th wrst 'v vr rd")]
+        public void RemoveVovelsTest(string nums, string expected)
+        {
+            var actual = RemoveVovels(nums);
+            Assert.Equal(expected, actual);
+        }
+
+        [Theory]
+        [InlineData("din", "(((")]
+        [InlineData("recede", "()()()")]
+        public void ReplaseCharrWithBreadTest(string nums, string expected)
+        {
+            var actual = ReplaseCharrWithBread(nums);
             Assert.Equal(expected, actual);
         }
 

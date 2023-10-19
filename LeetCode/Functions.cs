@@ -3,10 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using static System.Net.Mime.MediaTypeNames;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace LeetCode
 {
@@ -563,27 +566,128 @@ namespace LeetCode
         }
         #endregion
 
-        #region 9
-        public static double Find_Median_Sorted_Arrays2(int[] nums1, int[] nums2)
+        #region 9 CodeWars Multiples of 3 or 5
+        public static int Find_Sum_Of35_Mults(int nums1)
         {
-            double ress = 0;
-            int[] newArr = new int[nums1.Length + nums2.Length];
+            if (nums1 < 0)
+            {
+                return 0;
+            }
 
+            int ress = 0;
+            int newNums = nums1 - 1;
+            for (int i = 1; i <= newNums / 3; i++)
+            {
+                int curr = 3 * i;
+                if (curr % 5 != 0)
+                {
+                    ress += curr;
+                }
+            }
+
+            for (int i = 1; i <= newNums / 5; i++)
+            {
+                int curr = 5 * i;
+                ress += curr;
+            }
 
             return ress;
         }
+
+        public static int Find_Sum_Of35_MultsS(int value)
+        {
+            int sum = 0;
+            for (int i = 3; i < value; i += 3)
+            {
+                sum += i;
+            }
+            for (int i = 5; i < value; i += 5)
+            {
+                if (i % 3 != 0)
+                    sum += i;
+            }
+            return sum;
+        }
+
         #endregion
 
-        #region 10
+        #region 10 CodeWars Phone Number
+        public static string PhoneNumber(int[] numbers)
+        { 
+            StringBuilder sb = new StringBuilder();
+            sb.Append("(");
+            for (int i = 0; i < 10; i++)
+            {
+                if (i == 3)
+                {
+                    sb.Append(") ");
+                }
+                if (i == 6)
+                {
+                    sb.Append("-");
+                }
 
+                sb.Append(numbers[i]);
+            }
+
+            return sb.ToString();
+        }
+
+        public static string CreatePhoneNumber(int[] numbers)
+        {
+            return long.Parse(string.Concat(numbers)).ToString("(000) 000-0000");
+        }
         #endregion
 
-        #region 11
-
+        #region 11 CodeeWars Vovels
+        public static string RemoveVovels(string ste)
+        {
+            Regex regex = new Regex(@"[aeiou]", RegexOptions.IgnoreCase);
+            string result = regex.Replace(ste, "");
+            return result;
+        }
         #endregion
 
-        #region 12
+        #region 12 CodeWars ( and )
+        public static string ReplaseCharrWithBread(string str)
+        {
+            Dictionary<string,int> keyValuePairs = new Dictionary<string, int>();
+            StringBuilder sb = new StringBuilder();
+            foreach (var item in str)
+            {
+                string rchar = item.ToString().ToLower();
 
+                if (!keyValuePairs.ContainsKey(rchar))
+                {
+                    keyValuePairs.Add(rchar, 1);
+                }
+                else
+                {
+                    keyValuePairs[rchar]++;
+                }
+                    
+            }
+            foreach (var item in str)
+            {
+                string rchar = item.ToString().ToLower();
+
+                if (keyValuePairs[rchar] > 1)
+                {
+                    sb.Append(")");
+                }
+                else
+                {
+                    sb.Append("(");
+                }
+            }
+
+            return sb.ToString();
+        }
+
+        public static string DuplicateEncode(string word)
+        {
+            return new string(word.ToLower().Select(ch => word.ToLower().Count(innerCh => ch == innerCh) == 1 ? '(' : ')').ToArray());
+        }
         #endregion
     }
 }
