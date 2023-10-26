@@ -9,12 +9,16 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using static System.Net.Mime.MediaTypeNames;
+using static System.Windows.Forms.AxHost;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace LeetCode
 {
+    
     public static class Functions
     {
+        static Dictionary<int, int> cachpairs = new Dictionary<int, int>();
+
         #region 1 https://leetcode.com/problems/two-sum/
         static public int[] dictionary_two_sum(int[] nums, int target)
         {
@@ -734,8 +738,8 @@ namespace LeetCode
                 '.' Matches any single character.​​​​
                 '*' Matches zero or more of the preceding element.
             */
-            //return IsMatchHelper(s,p,s.Length-1,p.Length-1);
-            return IsMatchRec(s,p,s.Length-1,p.Length-1);
+            return IsMatchHelper(s,p,s.Length-1,p.Length-1);
+            //return IsMatchRec(s,p,s.Length-1,p.Length-1);
             //return Var2(s, p);
             //return Var1(s, p);
         }
@@ -1153,5 +1157,189 @@ namespace LeetCode
         }
         #endregion
 
+        #region 15 https://leetcode.com/problems/climbing-stairs/?envType=study-plan-v2&envId=dynamic-programming
+
+        public static int ClimbStairs4ms(int n)
+        {
+            if (n == 1)
+            {
+                return 1;
+            }
+
+            var climbArr = new int[n + 1];
+            climbArr[1] = 1;
+            climbArr[2] = 2;
+
+            for (int i = 3; i <= n; i++)
+            {
+                climbArr[i] = climbArr[i - 1] + climbArr[i - 2];
+            }
+
+            return climbArr[n];
+        }
+
+        public static int ClimbStairsRec7mc(int n)
+        {
+            
+            if (cachpairs.ContainsKey(n))
+            {
+                return cachpairs[n];
+            }
+            
+            int result = 0;
+            
+            if (n == 1)
+            {
+                result = 1;
+            }
+            else if (n == 2)
+            {
+                result = 2;
+            }
+            else 
+            {            
+                result = ClimbStairsRec7mc(n - 1) + ClimbStairsRec7mc(n - 2);
+            }
+
+            cachpairs[n] = result;
+            return result;
+        }
+
+        public static int ClimbStairsOld28s(int n)
+        {
+            int result = 0;
+            
+            result += MakeStep(1, n,0);
+            result += MakeStep(2, n,0);
+            
+            //result +=  MakeStepAs(1, n, 0).Result;
+            //result +=  MakeStepAs(2, n, 0).Result;
+            return result;
+        }
+
+        public static int MakeStep(int step, int max, int start)
+        {
+            //44 = 28.3 s  28 29.2
+            if (cachpairs.ContainsKey(start))
+            { 
+                return cachpairs[start];
+            }
+            int mewStep = start + step;
+            int result = 0;
+            if (mewStep < max)
+            {
+                result += MakeStep(1, max, mewStep);
+                result += MakeStep(2, max, mewStep);
+            }
+            else if (mewStep == max)
+            {
+                result++;
+            }
+            cachpairs[start] = result;
+            return result;
+        }
+        async public static Task<int> MakeStepAs(int step, int max, int start)
+        {
+            //44 = хуй забей
+            int mewStep = start + step;
+            int result = 0;
+            if (mewStep < max)
+            {
+                result += await MakeStepAs(1, max, mewStep);
+                result += await MakeStepAs(2, max, mewStep);
+            }
+            else if (mewStep == max)
+            {
+                result++;
+            }
+            return result;
+        }
+        #endregion
+
+        #region 16 https://leetcode.com/problems/fibonacci-number/description/?envType=study-plan-v2&envId=dynamic-programming
+        public static int Fib(int n)
+        {
+            int result = 0;
+            
+            if (n == 0)
+            {
+                return 0;
+            }
+            else if (n == 1)
+            {
+                return 1;
+            }
+            /* 41ms
+            else
+            {
+                result = Fib(n - 1) + Fib(n - 2);
+            }
+            */
+            // 20ms
+            var f0 = 0;
+            var f1 = 1;
+            for (var i = 2; i <= n; i++)
+            {
+                result = f0 + f1;
+                f0 = f1;
+                f1 = result;
+            }
+
+            return result;
+        }
+        #endregion
+
+        #region 17 https://leetcode.com/problems/n-th-tribonacci-number/?envType=study-plan-v2&envId=dynamic-programming
+        public static int Tribonacci(int n)
+        {
+            int result = 0;
+
+            if (n == 0)
+            {
+                return 0;
+            }
+            else if (n == 1 || n == 2)
+            {
+                return 1;
+            }
+
+            var f0 = 0;
+            var f1 = 1;
+            var f2 = 1;
+            for (var i = 3; i <= n; i++)
+            {
+                result = f0 + f1 + f2;
+                f0 = f1;
+                f1 = f2;
+                f2 = result;
+            }
+
+            return result;
+        }
+        #endregion
+
+        #region 18
+
+        #endregion
+
+        #region 19
+
+        #endregion
+
+        #region 20
+
+        #endregion
+
+        #region 21
+
+        #endregion
+
+        #region 22
+
+        #endregion
+
+        #region 23
+
+        #endregion
     }
 }

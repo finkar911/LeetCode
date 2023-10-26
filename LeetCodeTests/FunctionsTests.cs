@@ -154,5 +154,25 @@ namespace LeetCodeTests
             Assert.Equal(expected, actual);
         }
 
+
+        [Theory]
+        [InlineData(2, 2)]
+        [InlineData(3, 3)]
+        [InlineData(44, 1134903170)]
+        public void ClimbStairsTest(int nums, int expected)
+        {
+            int actual = ClimbStairsRec7mc(nums);
+            Assert.Equal(expected, actual);
+        }
+
+        [Theory]
+        [InlineData(2, 1)]
+        [InlineData(3, 2)]
+        public void FibTest(int nums, int expected)
+        {
+            int actual = Fib(nums);
+            Assert.Equal(expected, actual);
+        }
+
     }
 }
