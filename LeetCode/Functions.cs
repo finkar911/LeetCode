@@ -689,5 +689,469 @@ namespace LeetCode
             return new string(word.ToLower().Select(ch => word.ToLower().Count(innerCh => ch == innerCh) == 1 ? '(' : ')').ToArray());
         }
         #endregion
+
+        #region 13 https://leetcode.com/problems/power-of-four/?envType=daily-question&envId=2023-10-23
+        public static bool IsPowerOfFour(int n)
+        {
+            ///25ms    Beats 88.06 %
+            ///27.98MB Beats 98.51 %
+
+            if (n == 1)
+            {
+                return true;
+            }
+
+            if (n <= 0 || n % 4 != 0 )
+            {
+                return false;
+            }
+
+            while (n != 1)
+            {
+                n /= 4;
+                if (n == 1)
+                {
+                    return true;
+                }
+
+                if (n % 4 != 0)
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+        #endregion
+
+        #region 14 https://leetcode.com/problems/regular-expression-matching/
+        public static bool IsMatch(string s, string p)
+        {
+            ///25ms    Beats 88.06 %
+            ///27.98MB Beats 98.51 %
+
+            /*
+                '.' Matches any single character.​​​​
+                '*' Matches zero or more of the preceding element.
+            */
+            //return IsMatchHelper(s,p,s.Length-1,p.Length-1);
+            return IsMatchRec(s,p,s.Length-1,p.Length-1);
+            //return Var2(s, p);
+            //return Var1(s, p);
+        }
+
+        private static bool IsMatchRec(string s, string p, int si, int pi)
+        {
+            if (si < 0)
+            {
+                if ( pi % 2 == 0)
+                {
+                    for (int i = 1; i < pi; i += 2)
+                    {
+                        if (p[i] != '*')
+                        {
+                            return false;
+                        }
+                    }
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else 
+            {
+                if (pi < 0)
+                {
+                    return false;
+                }
+            }
+
+            //прямое сравнение
+            if (s[si] == p[pi] || p[pi] == '.')
+            {
+                return IsMatchRec(s, p, si - 1, pi - 1); //то длина -1
+            }
+            //если не совпадение и это не *
+            if (p[pi] != '*')
+            {
+                return false;
+            }
+            //Убираем дублированные всех последних *
+            while (pi >= 0 && p[pi] == '*')
+            {
+                pi--;
+            }
+            //Если после убирания всех * меньше 0 а строка больше 0
+            if (pi < 0)
+                return false;
+            //Пока совпадает символ и ласт символ * 
+            while (si >= 0 && (s[si] == p[pi] || p[pi] == '.'))
+            {
+                if (IsMatchRec(s, p, si, pi - 1)) //Ветвим с тем же самым патерном без ласт символ *
+                {
+                    return true;
+                }
+
+                si--;
+            }
+            //Если не совпадает то убираем ласт символ * 
+            return IsMatchRec(s, p, si, pi - 1);
+
+        }
+
+        private static bool IsMatchHelper(string s, string p, int si, int pi)
+        {
+            //Если строка < 0 
+            if (si < 0)
+            {
+                //проверяем что всеь оставшийся паттерн *
+                while (pi >= 0 && p[pi] == '*')
+                {
+                    pi -= 2;
+                }
+
+                return pi < 0;
+            }
+            //Если строка не 0 а паттерн больше 0 то ошибка
+            if (pi < 0)
+            {
+                return false;
+            }
+            //прямое сравнение
+            if (s[si] == p[pi] || p[pi] == '.')
+            {
+                return IsMatchHelper(s, p, si - 1, pi - 1); //то длина -1
+            }
+            //если не совпадение и это не *
+            if (p[pi] != '*')
+            {
+                return false;
+            }
+            //Убираем дублированные всех последних *
+            while (pi >= 0 && p[pi] == '*')
+            {
+                pi--;
+            }
+            //Если после убирания всех * меньше 0 а строка больше 0
+            if (pi < 0)
+                return false;
+            //Пока совпадает символ и ласт символ * 
+            while (si >= 0 && (s[si] == p[pi] || p[pi] == '.'))
+            {
+                if (IsMatchHelper(s, p, si, pi - 1)) //Ветвим с тем же самым патерном без ласт символ *
+                {
+                    return true;
+                }
+
+                si--;
+            }
+            //Если не совпадает то убираем ласт символ * 
+            return IsMatchHelper(s, p, si, pi - 1);
+        }
+
+        public static bool Var2(string s, string p)
+        {
+            char[] sc = s.ToCharArray();
+            char[] pc = p.ToCharArray();
+
+            if (sc.Length == 0)
+            {
+                if (pc.Length % 2 == 0)
+                {
+                    for (int i = 1; i < pc.Length; i += 2)
+                    {
+                        if (pc[i] != '*')
+                        {
+                            return false;
+                        }
+                    }
+
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                if (pc.Length == 0)
+                {
+                    return false;
+                }
+            }
+
+            int l = 0;
+            int r = 0;
+            for (int i = 0; i < pc.Length; i++)
+            {
+                if (sc.Length > i)
+                {
+                    if (pc.Length > i + 1 && pc[i + 1] == '*')
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        if (sc[i] == pc[i] || pc[i] == '.')
+                        {
+                            l = i + 1;
+                        }
+                        else
+                        {
+                            return false;
+                        }
+                    }
+                }
+                else 
+                {
+                    break;
+                }
+            }
+
+            for (int i = 0; i < pc.Length - l; i++)
+            {
+
+                if (pc[pc.Length - 1 - i] == '*')
+                {
+                    break;
+                }
+                else
+                {
+                    int id = sc.Length - 1 - i;
+                    if (id >= 0)
+                    {
+                        if (sc[sc.Length - 1 - i] == pc[pc.Length - 1 - i] || pc[pc.Length - 1 - i] == '.')
+                        {
+                            r = i + 1;
+                        }
+                        else
+                        {
+                            return false;
+                        }
+                    }
+                    else 
+                    {
+                        break;
+                    }
+                }
+            }
+
+            if (l == s.Length && l == p.Length)
+            {
+                return true;
+            }
+
+            int ls = s.Length - l - r;
+            int lp = p.Length - l - r;
+
+            if (ls < 0)
+            {
+                lp += Math.Abs(ls);
+                ls = 0;
+            }
+
+            sc = s.Substring(l, ls).ToCharArray();
+            pc = p.Substring(l, lp).ToCharArray();
+
+            string pcg = new string(pc);
+            string scg = new string(sc);
+
+            int newl = 0;
+            int newr = 0;
+            char toFind = ' ';
+            char toFindBack = ' ';
+            if (pc.Length > 0)
+            {
+                if (sc.Length > 0)
+                {
+                    toFind = sc[0];
+                }
+                //Убираем крайниее *
+                if ((pc[0] != toFind && pc[0]!='.') && pc.Length > 1 && pc[1] == '*')
+                {
+                    newl = 2;
+                }
+
+                if (sc.Length > 0)
+                {
+                    toFindBack = sc[sc.Length - 1];
+                }
+                if (pc.Length > 1 && (pc[pc.Length - 2] != toFindBack && pc[pc.Length - 2] != '.') && pc[pc.Length - 1] == '*')
+                {
+                    newr = 2;
+                }
+            }
+            if (sc.Length == 0 && newl == pcg.Length)
+            {
+                return true;
+            }
+
+            int pcgL = pcg.Length - newl - newr;
+            if (pcgL < 0)
+            {
+                pcgL = 0;
+            }
+
+            if (pcgL >= 0)
+            {
+                pc = pcg.Substring(newl, pcgL).ToCharArray();
+            }
+            string pcg0 = new string(pc);
+
+            int pcSameChCount = 0;
+            int sameChCount = 0;
+            //Проход по нужному *
+            if (pc.Length > 1 && toFind !=' ')
+            {
+                if ((pc[0] == toFind || pc[0] == '.') && pc[1] == '*')
+                {
+                    sameChCount = 1;
+                    for (int i = 1; i < sc.Length; i++)
+                    {
+                        if (sc[i] == toFind || pc[0] == '.')
+                        {
+                            sameChCount++;
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    }
+
+                    pcSameChCount = 2;
+                    //тут сжимать а*а до а* если есть а?
+                    for (int i = 2; i < sameChCount + 2; i++)
+                    {
+                        if (pc.Length > i && (pc[i] == pc[0])) //|| pc[i]=='*'
+                        {
+                            pcSameChCount++;
+                        }
+                        else if (pc.Length > i && pc[i] == '*')
+                        {
+                            pcSameChCount--;
+                            break;
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    }
+                }
+            }
+
+            string scg1 = new string(sc);
+            string pcg1 = new string(pc);
+
+            int scg1L = scg1.Length - sameChCount;
+            scg1L = scg1L < 0 ? 0 : scg1L;
+
+            int pcg1L = pcg1.Length - pcSameChCount;
+            pcg1L = pcg1L < 0 ? 0 : pcg1L;
+
+            if (scg1.Length >= sameChCount)
+            {
+                sc = scg1.Substring(sameChCount, scg1L).ToCharArray();
+            }
+            if (pcg1.Length >= pcSameChCount)
+            {
+                pc = pcg1.Substring(pcSameChCount, pcg1L).ToCharArray();
+            }
+
+            string scg2 = new string(sc);
+            string pcg2 = new string(pc);
+
+            if (sc.Length > 0 && pc.Length == 0)
+            {
+                return false;
+            }
+            else if (sc.Length == 0 && pc.Length == 0)
+            {
+                return true;
+            }
+            else 
+            {
+                return Var2(new string(sc), new string(pc));
+            }
+
+        }
+
+        public static bool Var1(string s, string p) 
+        {
+            char[] sc = s.ToCharArray();
+            char[] pc = p.ToCharArray();
+            int count = 0;
+            char curr = ' ';
+            for (int i = 0; i < pc.Length; i++)
+            {
+                if (count > sc.Length - 1)
+                {
+                    return false;
+                }
+
+                char cd = sc[count];
+                char pd = pc[i];
+
+                if (sc[count] == pc[i] || pc[i] == '.')
+                {
+                    if (pc.Length > i + 1 && pc[i + 1] == '*')
+                    {
+                        curr = pc[i];
+                        while (true)
+                        {
+                            if (count <= sc.Length - 1 && (sc[count] == curr || curr == '.'))
+                            {
+                                count++;
+                            }
+                            else
+                            {
+                                break;
+                            }
+                        }
+
+                        i++;
+
+                        if (pc.Length > i + 1 && pc[i + 1] == curr)
+                        {
+                            for (int ii = i + 1; ii < pc.Length; ii++)
+                            {
+                                if (pc[ii] == curr)
+                                {
+                                    i++;
+                                }
+                                else
+                                {
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        count++;
+                    }
+                }
+                else if (pc.Length > i + 1 && pc[i + 1] == '*')
+                {
+                    //SKIPP
+                    i++;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+
+            if (count <= sc.Length - 1)
+            {
+                return false;
+            }
+
+            return true;
+        }
+        #endregion
+
     }
 }

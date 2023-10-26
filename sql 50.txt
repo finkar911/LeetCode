@@ -1,0 +1,685 @@
+9150,9148,9146,9144,9142,9141
+16150,
+
+--select machine_id, CAST((SUM(execTime)/Count(*)) AS DECIMAL(18,3)) processing_time  from (
+select machine_id, Round(AVG(execTime) ,3) processing_time  from (
+select ss.machine_id, ss.process_id, es.timestamp -ss.timestamp execTime
+from Activity sa 
+join Activity ea on 
+ss.activity_type = 'start' 
+and es.activity_type = 'end' 
+and ss.machine_id = es.machine_id 
+and ss.process_id = es.process_id
+)t
+group by machine_id
+
+
+select 
+    s.student_id,
+    s.student_name,
+    sbj.subject_name,
+    count(e.subject_name) as attended_exams
+from 
+Students s
+cross join subjects sbj
+left join examinations e
+    on s.student_id = e.student_id and
+    sbj.subject_name = e.subject_name
+group by
+    s.student_id,
+    s.student_name,
+    sbj.subject_name
+order by s.student_id;
+
+
+/* Write your T-SQL query statement below */
+SELECT A.name
+FROM Employee A
+    LEFT JOIN Employee B
+        ON A.id = B.managerid
+GROUP BY A.name, A.id
+HAVING COUNT(A.name)>= 5
+/*
+select name from (
+select es.name,es.id, Count(*) co from Employee em join Employee es on em.managerId = es.id
+group by es.name, es.id
+)t where co>=5
+*/
+
+https://leetcode.com/problems/confirmation-rate/?envType=study-plan-v2&envId=top-sql-50
+/* Write your T-SQL query statement below */
+select user_id, CAST((SUM(rate)/CAST(Count(*) AS DECIMAL(18,2))) AS DECIMAL(18,2)) as confirmation_rate  from (
+Select s.user_id, case when isnull(c.action,'timeout') = 'timeout' then 0.00 else 1.00 end rate
+from Signups s 
+left join Confirmations c on s.user_id = c.user_id
+)t group by user_id
+
+SELECT s.user_id,
+CASE WHEN COUNT(c.user_id) = 0 THEN 0
+ELSE Convert(decimal(18,2),SUM(CASE WHEN c.action = 'confirmed' THEN 1 ELSE 0 END) * 1.00 / COUNT(c.user_id)) END as confirmation_rate
+FROM Signups s
+left join Confirmations c on s.user_id = c.user_id
+GROUP BY s.user_id
+
+https://leetcode.com/problems/average-selling-price/?envType=study-plan-v2&envId=top-sql-50
+select product_id, isnull(ROUND(SUM(costs)*1.00/ SUM(units)*1.00,2),0) average_price  from (
+select p.product_id, (u.units * p.price) costs, u.units units from Prices p
+left join UnitsSold u on u.product_id = p.product_id and u.purchase_date between p.start_date and p.end_date 
+)t group by product_id
+
+select p.product_id, isnull(ROUND(SUM(u.units*p.price)*1.00/SUM(u.units),2),0) average_price from Prices p
+left join UnitsSold u on u.product_id = p.product_id and u.purchase_date between p.start_date and p.end_date 
+group by p.product_id
+
+https://leetcode.com/problems/project-employees-i/?envType=study-plan-v2&envId=top-sql-50
+select p.project_id, Round(SUM(e.experience_years)*1.00/Count(e.employee_id),2)  average_years 
+from project p join Employee e on p.employee_id = e.employee_id 
+group by p.project_id  
+
+https://leetcode.com/problems/percentage-of-users-attended-a-contest/?envType=study-plan-v2&envId=top-sql-50
+/* Write your T-SQL query statement below */
+--declare @usercount int
+--set @usercount = (select count(*) c from Users)
+
+declare @usercount float =100.0/(select count(*) c from Users)
+
+--select contest_id,percentage from (
+select contest_id,Round((Count(user_id)*@usercount),2) percentage from Register
+group by contest_id
+order by percentage desc,contest_id
+--)t order by percentage desc
+
+https://leetcode.com/problems/queries-quality-and-percentage/?envType=study-plan-v2&envId=top-sql-50
+/* Write your T-SQL query statement below */
+select query_name 
+,Round(Sum(rating*1.00 /position)*1.00 / Count(result),2) quality
+,Round((select count(result) from Queries where rating < 3 and query_name = q.query_name)*1.00 / Count(result)*100,2) poor_query_percentage     
+from Queries q
+group by query_name 
+
+https://leetcode.com/problems/monthly-transactions-i/?envType=study-plan-v2&envId=top-sql-50
+select month,country, count(*) trans_count, Sum(approved) approved_count , Sum(amount) trans_total_amount, Sum(amount*approved) approved_total_amount    from (
+
+select 
+format(trans_date,'yyyy-MM') month
+--cast(DATEPART(yyyy,trans_date) as varchar) + '-' + cast(DATEPART(mm,trans_date) as varchar) month
+--cast(year(trans_date) as varchar) + '-' + cast(month(trans_date) as varchar) month
+--dateformat(trans_date, %Y %m) month
+, country 
+, case when state = 'approved' then 1 else 0 end approved
+,  amount 
+ from Transactions 
+)t
+group by month,country
+
+https://leetcode.com/problems/immediate-food-delivery-ii/?envType=study-plan-v2&envId=top-sql-50
+/* Write your T-SQL query statement below */
+/*
+select 
+Round(
+    Sum(case when order_date=customer_pref_delivery_date then 1 else 0 end)
+        *1.00 / Count(*) * 100
+,2) immediate_percentage  from Delivery 
+*/
+
+select 
+Round(
+    Sum(case when order_date=customer_pref_delivery_date then 1 else 0 end)
+        *1.00 / Count(*) * 100
+,2) immediate_percentage  from Delivery d
+where order_date = (select min(order_date) from Delivery where customer_id = d.customer_id )
+
+https://leetcode.com/problems/game-play-analysis-iv/?envType=study-plan-v2&envId=top-sql-50
+/* Write your T-SQL query statement below */
+declare @players float = (select Count(*) c from (select distinct player_id c from Activity)tf)
+
+select Round(Count(*) / @players,2) fraction from (
+select player_id , Min(event_date) startD from Activity
+group by player_id
+)t
+join Activity a on t.player_id = a.player_id and a.event_date = dateadd(day,1,t.startD)
+
+
+
+select round(cast(count(*) as float) / (select count(distinct player_id) from Activity),2) as fraction 
+from
+(
+	Select player_id,MIN(event_date) as mins
+	From Activity as a
+	Group by player_id
+) as a
+join Activity as b
+on a.player_id = b.player_id
+and DATEDIFF(DD,a.mins,b.event_date) = 1
+
+https://leetcode.com/problems/number-of-unique-subjects-taught-by-each-teacher/?envType=study-plan-v2&envId=top-sql-50
+select teacher_id, count(distinct subject_id) cnt  from Teacher group by teacher_id
+
+
+https://leetcode.com/problems/user-activity-for-the-past-30-days-i/?envType=study-plan-v2&envId=top-sql-50
+select activity_date day, count(distinct user_id) active_users  from Activity 
+--where CAST (activity_date as date) between dateadd(day,-30,'2019-07-28') and '2019-07-27'
+where CAST (activity_date as date) between '2019-06-28' and '2019-07-27'
+group by activity_date
+
+https://leetcode.com/problems/product-sales-analysis-iii/?envType=study-plan-v2&envId=top-sql-50
+/* Write your T-SQL query statement below */
+select j.product_id , j.first_year,s.quantity ,s.price   from (
+select product_id , Min(year) first_year from Sales group by product_id
+)j
+join Sales s on j.product_id = s.product_id and j.first_year =s.year 
+
+
+/* Write your T-SQL query statement below */
+select a.product_id, a.year as first_year, a.quantity, a.price
+from(
+        select product_id, year,
+                rank() over (partition by product_id order by year) as rk,
+                quantity, price
+        from Sales
+) a
+where rk = 1
+
+
+https://leetcode.com/problems/classes-more-than-5-students/?envType=study-plan-v2&envId=top-sql-50
+select class from Courses group by class
+having count(student) > 4 
+
+
+https://leetcode.com/problems/biggest-single-number/?envType=study-plan-v2&envId=top-sql-50
+/* Write your T-SQL query statement below */
+
+select MAX(num) num from (
+select  num from MyNumbers group by num
+having num = max(num) and count(num)=1
+)t
+
+
+https://leetcode.com/problems/customers-who-bought-all-products/?envType=study-plan-v2&envId=top-sql-50
+/* Write your T-SQL query statement below */
+declare @prodC int = (select count(product_key) from Product)
+
+select customer_id from Customer group by customer_id
+having count(distinct product_key ) = @prodC
+
+
+select a.customer_id
+from (select distinct * from Customer) a
+group by a.customer_id
+having count(*) = (select count(*) from Product)
+
+https://leetcode.com/problems/the-number-of-employees-which-report-to-each-employee/?envType=study-plan-v2&envId=top-sql-50
+select reports_to employee_id , 
+(select name from Employees where employee_id = e.reports_to) name ,
+Count(*) reports_count , Round(SUM(age)*1.0/Count(*),0) average_age   
+from Employees e where reports_to is not null group by reports_to
+
+https://leetcode.com/problems/primary-department-for-each-employee/?envType=study-plan-v2&envId=top-sql-50
+/* Write your T-SQL query statement below */
+/*
+select e.employee_id, e.department_id from (
+select employee_id , case when count(department_id)>1 then 'Y' else 'N' end mflag 
+from Employee 
+group by employee_id
+)t 
+join 
+Employee e on e.employee_id=t.employee_id and t.mflag = e.primary_flag 
+*/
+--with oneDep as
+select e.employee_id, e.department_id  from (
+  select employee_id, count(department_id) depc from Employee group by employee_id
+)t
+join 
+Employee e on e.employee_id=t.employee_id 
+where depc = 1 or (primary_flag = 'Y')
+
+select t.employee_id, t.department_id  from (
+  SELECT employee_id, department_id, primary_flag, COUNT(employee_id) OVER (PARTITION BY employee_id) AS depc
+  FROM Employee
+  GROUP BY employee_id, department_id, primary_flag
+)t
+where depc = 1 or (primary_flag = 'Y')
+
+
+WITH CTE AS (
+SELECT employee_id, department_id, primary_flag, COUNT(employee_id) OVER (PARTITION BY employee_id) AS cnt
+FROM Employee
+GROUP BY employee_id, department_id, primary_flag
+)
+
+SELECT employee_id, department_id
+FROM CTE
+WHERE cnt = 1 OR primary_flag = 'Y'
+
+SELECT employee_id, department_id
+FROM Employee
+WHERE primary_flag = 'Y' OR employee_id IN 
+(SELECT employee_id FROM Employee 
+GROUP BY employee_id HAVING COUNT(employee_id) = 1);
+
+https://leetcode.com/problems/triangle-judgement/?envType=study-plan-v2&envId=top-sql-50
+/* Write your T-SQL query statement below */
+select * 
+, case when x+y > z and x+z>y and y+z>x then 'Yes' else 'No' end triangle 
+from Triangle
+
+
+https://leetcode.com/problems/consecutive-numbers/?envType=study-plan-v2&envId=top-sql-50
+WITH cte AS (
+ SELECT Id, num , grp = SUM(CASE WHEN num  = prev THEN 0 ELSE 1 END) OVER(ORDER BY id)
+ FROM (SELECT *, prev = LAG(num) OVER(ORDER BY id) FROM Logs) s
+)
+select distinct ConsecutiveNums from (
+SELECT num ConsecutiveNums
+FROM cte
+GROUP BY grp,num
+having Count(*)>2
+--ORDER BY grp
+)t
+
+/*
+select num ConsecutiveNums
+from (select Logs.*,
+             (row_number() over (order by id) -
+              row_number() over (partition by num order by id)
+             ) as grp
+      from Logs
+     ) t
+group by grp, num
+having Count(*)>2
+ORDER BY grp;
+*/
+
+
+with cte as (
+    select num,
+    lead(num,1) over(order by id) num1,
+    lead(num,2) over(order by id) num2
+    from logs
+
+)
+select distinct num ConsecutiveNums 
+from cte 
+where (num=num1) and (num=num2)
+
+https://leetcode.com/problems/product-price-at-a-given-date/?envType=study-plan-v2&envId=top-sql-50
+/* Write your T-SQL query statement below */
+with difTable as (
+    select product_id , new_price ,DATEDIFF(day,change_date,'2019-08-16') dif 
+    from Products 
+    where change_date <= '2019-08-16' 
+)
+
+select 
+    product_id, 
+    isnull((select new_price from difTable where product_id = t.product_id and dif = mind),10) price 
+from (
+    select 
+        product_id, 
+        (select min(dif) from difTable where product_id = p.product_id) mind 
+    from Products p 
+    group by product_id 
+)t
+
+
+
+
+select
+    t1.product_id,
+    max(case
+        when t2.product_id is null then 10
+        else t1.new_price
+    end ) as price
+from   
+    Products t1
+    left outer join
+    (select
+        product_id,
+        max(change_date) fecha_max
+    from
+        Products
+    where 
+        change_date<='2019-08-16'
+    group by 
+        product_id) t2
+    on t1.product_id=t2.product_id
+where 
+    t1.change_date=t2.fecha_max
+    or fecha_max is null
+group by 
+    t1.product_id
+	
+	
+https://leetcode.com/problems/last-person-to-fit-in-the-bus/?envType=study-plan-v2&envId=top-sql-50	
+/* Write your T-SQL query statement below */
+/*
+select Turn,Id,name,weight
+, weight+isnull(LAG(TotalWeight) OVER(ORDER BY turn),0) TotalWeight 
+from (
+    */
+
+select top 1 person_name from (
+select Turn, person_id Id, person_name ,weight, (select Sum(weight) from Queue where turn <=q.turn) totalW
+from Queue q
+)t
+where totalW<=1000
+order by turn desc
+
+/*
+select * 
+, weight+isnull(LAG(TotalWeight) OVER(ORDER BY turn),0) [Total Weight]
+from sortQ 
+*/
+
+declare @totalW int, @id int
+set @totalW = 0
+set @id = 0
+
+while (@totalW<=1000)
+begin 
+    set @id=@id+1
+    set @totalW = (select weight + @totalW from Queue where turn = @id)
+end
+
+select person_name from Queue where turn = @id-1
+
+
+
+/* Write your T-SQL query statement below */
+select top 1
+	[t].[person_name]
+from
+(
+	select
+		[q].[person_id]
+	   ,[q].[person_name]
+	   ,[q].[weight]
+	   ,[q].[turn]
+	   ,sum([q].[weight]) over (order by [q].[turn]) as [w]
+	from [Queue] as [q] with(nolock)
+) as [t]
+where [t].[w] <= 1000
+order by [t].[turn] desc
+
+
+
+https://leetcode.com/problems/count-salary-categories/?envType=study-plan-v2&envId=top-sql-50
+with resCat as (
+    select 'accounts_count' cat, SUM(low) [Low Salary], SUM(average) [Average Salary], SUM(high) [High Salary] from ( 
+        select 
+            case when income < 20000 then 1 else 0 end low,
+            case when income >= 20000 and income <= 50000 then 1 else 0 end average,
+            case when income > 50000 then 1 else 0 end high
+        from Accounts
+    )t
+)
+
+select *
+from resCat
+unpivot (value for category  in ([Low Salary],[Average Salary],[High Salary])) up
+pivot (sum(value) for cat in ([accounts_count])) p
+
+
+///LoL
+select 'Low Salary' as category, COUNT(*) as accounts_count from 
+(Select act.account_id, act.income from Accounts act
+where act.income < 20000) as low
+UNION
+select 'Average Salary' as category, COUNT(*) as accounts_count from 
+(Select act.account_id, act.income from Accounts act
+where act.income > 19999 and act.income < 50001) as aver
+UNION
+select 'High Salary' as category, COUNT(*) as accounts_count from 
+(Select act.account_id, act.income from Accounts act
+where act.income > 50000) as high
+
+
+https://leetcode.com/problems/fix-names-in-a-table/?envType=study-plan-v2&envId=top-sql-50
+select user_id, UPPER(LEFT(name,1))+LOWER(SUBSTRING(name,2,LEN(name))) name  from Users
+order by user_id
+
+select user_id, concat(upper(left(name,1)),lower(right(name,len(name)-1))) as name
+from Users
+order by user_id
+
+
+
+https://leetcode.com/problems/exchange-seats/?envType=study-plan-v2&envId=top-sql-50
+/* Write your T-SQL query statement below */
+declare @maxid int = (select case when maxid % 2 = 0 then maxid +1 else maxid end newmaxid from (select Max(id) maxid from Seat)t)
+select newid id,student from (
+select 
+case when id < @maxid  then   --lead(id) over(order by id) is not null 
+        (case when id % 2 = 0 then id -1 else id +1 end)
+    else id end newid
+,student 
+--,lastOne = lead(id) over(order by id)
+from Seat 
+)t order by newid
+
+
+https://leetcode.com/problems/movie-rating/?envType=study-plan-v2&envId=top-sql-50
+/* Write your T-SQL query statement below */
+with userRait as 
+(
+   select mr.user_id, count(movie_id) uc, 0 movie_id, 0 mc, u.name nm from MovieRating mr
+   join Users u on u.user_id = mr.user_id 
+   group by mr.user_id,u.name 
+    union
+   select 0 user_id,0 uc, mr.movie_id, Round(Sum(rating)*1.00/count(mr.movie_id),2) mc, u.title nm from MovieRating mr
+   join Movies u on u.movie_id= mr.movie_id 
+   where created_at between '2020-02-01' and '2020-02-29' 
+   group by mr.movie_id,u.title 
+)
+
+--select distinct results from (
+select Min(nm) results from userRait where uc = (select max(uc) from userRait)
+union all
+select Min(nm) results from userRait where mc = (select max(mc) from userRait)
+--------------------------------------------------------------------------------
+with 
+userRait as 
+   (select mr.user_id, count(movie_id) uc, u.name nm from MovieRating mr
+   join Users u on u.user_id = mr.user_id 
+   group by mr.user_id,u.name),
+   
+movieRait as
+   (select mr.movie_id, Round(Sum(rating)*1.00/count(mr.movie_id),2) mc, u.title nm from MovieRating mr
+   join Movies u on u.movie_id= mr.movie_id 
+   where created_at between '2020-02-01' and '2020-02-29' 
+   group by mr.movie_id,u.title) 
+
+
+select Min(nm) results from userRait where uc = (select max(uc) from userRait)
+union all
+select Min(nm) results from movieRait where mc = (select max(mc) from movieRait)
+________________________________________________________________________________
+
+with cte_user as (select top 1 t2.name as results from MovieRating t1 join Users t2 on t1.user_id=t2.user_id
+group by t2.name order by count(movie_id) desc, t2.name asc),
+
+cte_movie as (select top 1 t2.title as results from MovieRating t1 join Movies t2 on t1.movie_id=t2.movie_id
+where month(created_at)=2 and year(created_at)=2020 group by t2.title 
+order by avg(t1.rating*1.00) desc, t2.title asc)
+
+select * from cte_user
+union all
+select * from cte_movie
+
+
+https://leetcode.com/problems/restaurant-growth/?envType=study-plan-v2&envId=top-sql-50
+
+with comboTb as (select visited_on, SUM(amount)amount from Customer group by visited_on)
+
+select visited_on, days7 amount, Round(days7*1.00/7,2) average_amount from (
+select * 
+, (select SUM(amount) from comboTb where visited_on between dateadd(day,-6,c.visited_on) and c.visited_on) days7
+, (select count(visited_on) from comboTb where visited_on between dateadd(day,-6,c.visited_on) and c.visited_on) cout
+ from (    
+    select * from comboTb 
+ )c 
+)t 
+where cout>6
+order by visited_on
+
+
+
+https://leetcode.com/problems/friend-requests-ii-who-has-the-most-friends/?envType=study-plan-v2&envId=top-sql-50
+
+/* Write your T-SQL query statement below */
+with rest as (
+select id, SUM(c) num from (
+select requester_id id ,count(*)c from RequestAccepted group by requester_id 
+union all
+select accepter_id id ,count(*)c from RequestAccepted group by accepter_id 
+)t
+group by id
+)
+
+select * from rest where num = (select max(num) from rest)
+-------------------------------
++60% 
+-------------------------------
+with rest as (
+select id, SUM(c) num from (
+select requester_id id ,count(requester_id)c from [dbo].[RequestAccepted] group by requester_id //[dbo].[RequestAccepted] + 10%
+union all
+select accepter_id id ,count(accepter_id)c from [dbo].[RequestAccepted] group by accepter_id 
+)t
+group by id
+)
+
+select id,sum(num) num from rest 
+group by id
+having sum(num) = (select max(num) from rest)
+
+/*
+with cte as (
+    select requester_id id, count(requester_id) num 
+    from [dbo].[RequestAccepted]
+    group by requester_id
+    union all
+    select accepter_id id, count(accepter_id) num 
+    from [dbo].[RequestAccepted]
+    group by accepter_id
+),cteMaxSum as (
+    select id , sum(num) numSum
+    from cte
+    group by id
+)
+select id, sum(num) num 
+from cte
+group by id
+having sum(num) =  (select max(numSum) from cteMaxSum)
+*/
+
+
+
+https://leetcode.com/problems/investments-in-2016/?envType=study-plan-v2&envId=top-sql-50
+/* Write your T-SQL query statement below */
+with tivs as
+(Select tiv_2015 from [dbo].[Insurance] group by tiv_2015 having count(*) > 1),
+pose as (Select lat,lon from [dbo].[Insurance] group by lat,lon having count(*) < 2)
+
+
+select Round(SUM(tiv_2016),2) tiv_2016  from pose p 
+join [dbo].[Insurance] i on p.lat = i.lat and p.lon = i.lon and i.tiv_2015 in (select tiv_2015 from tivs)
+
+
+
+
+https://leetcode.com/problems/department-top-three-salaries/?envType=study-plan-v2&envId=top-sql-50
+/* Write your T-SQL query statement below */
+with reTab as (
+select departmentId,salary from (
+select departmentId,salary,row_number() over (partition by departmentId order by salary desc) incomeNm
+from [dbo].[Employee] 
+group by salary, departmentId
+)t 
+where incomeNm<4
+)
+
+select d.name Department, e.name Employee, r.salary from reTab r 
+join [dbo].[Department] d on d.id = r.departmentId 
+join [dbo].[Employee] e on r.salary = e.salary and r.departmentId =e.departmentId
+
+-----
++10%
+-----
+select Department, Employee, Salary from
+(select d.name as Department, e.name as Employee, e.salary as Salary, dense_rank() over (partition by d.id order by e.salary desc) as rank
+from Department d
+inner join Employee e on e.departmentId = d.id) salary_ranks
+where rank <= 3
+-------
++45%
+-------
+select t.Department,t.Employee,t.salary as Salary  from 
+(select d.name as Department,e.name as Employee,e.salary, dense_rank() over (partition by d.name order by e.salary desc) as rnk from employee e join department d on e.departmentId=d.id)t where t.rnk<=3 order by t.salary desc
+
+
+https://leetcode.com/problems/delete-duplicate-emails/submissions/1083859139/?envType=study-plan-v2&envId=top-sql-50
+delete
+from Person
+where id not in (
+    select min(id)
+    from Person 
+    group by email
+)
+
+
+https://leetcode.com/problems/second-highest-salary/?envType=study-plan-v2&envId=top-sql-50
+/* Write your T-SQL query statement below */
+select salary SecondHighestSalary  
+from Employee 
+order by salary 
+OFFSET 1 ROWS
+FETCH NEXT 1 ROWS ONLY;
+
+
+select top 1 SecondHighestSalary from (
+select salary SecondHighestSalary, 1 id  
+from Employee 
+order by salary 
+OFFSET 1 ROWS
+FETCH NEXT 1 ROWS ONLY
+union select null SecondHighestSalary, 2 id
+)t
+order by id
+
+select top 1 SecondHighestSalary from (
+select salary SecondHighestSalary, 1 id  
+from Employee group by salary
+order by salary desc
+OFFSET 1 ROWS
+FETCH NEXT 1 ROWS ONLY
+union select null SecondHighestSalary, 2 id
+)t
+order by id
+
+
+https://leetcode.com/problems/group-sold-products-by-the-date/?envType=study-plan-v2&envId=top-sql-50
+
+/* Write your T-SQL query statement below */
+with groupR as (select sell_date,product from Activities group by sell_date,product )
+
+select sell_date , count(*) num_sold, 
+STUFF( (SELECT ',' + product from groupR
+                             where sell_date = q.sell_date                             
+                             order by product
+                             FOR XML PATH('')), 
+                            1, 1, '') products
+from groupR q group by sell_date
+
+with groupR as (select sell_date,product from Activities group by sell_date,product )
+
+select sell_date , count(*) num_sold, 
+STRING_AGG ( product, ',') WITHIN GROUP ( ORDER BY product ) as products
+from groupR q group by sell_date
+
+select  sell_date as "sell_date", 
+        COUNT( product ) as "num_sold",
+        STRING_AGG ( product, ',') WITHIN GROUP ( ORDER BY product ) as "products"
+FROM ( select distinct * from Activities  ) t
+GROUP BY sell_date 
+order by sell_date

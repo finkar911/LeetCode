@@ -116,5 +116,43 @@ namespace LeetCodeTests
             Assert.Equal(expected, actual);
         }
 
+        [Theory]
+        [InlineData(16, true)]
+        [InlineData(12, false)]
+        [InlineData(0, false)]
+        [InlineData(-64, false)]
+        public void IsPowerOfFourTest(int nums, bool expected)
+        {
+            var actual = IsPowerOfFour(nums);
+            Assert.Equal(expected, actual);
+        }
+
+        [Theory]
+        [InlineData("mississippi", "mis*is*ip*.", true)]
+        [InlineData("ab", ".*", true)]
+        [InlineData("aaa", "aaaa", false)]
+        [InlineData("aaa", "a*a", true)]
+        [InlineData("aaa", "a*aaa", true)]
+        [InlineData("aaa", "a*aaaa", false)]
+        [InlineData("aaa", "ab*a*c*a", true)]
+        [InlineData("aa","a*", true)]
+        [InlineData("aa","aa*", true)]
+        [InlineData("aa","a.", true)]
+        [InlineData("aa","a", false)]
+        [InlineData("aab", "c*a*b", true)]
+        [InlineData("aaa", "ab*a", false)]
+        [InlineData("ab", ".*..", true)]
+        [InlineData("ab", ".*..c*", true)]
+        [InlineData("a", ".*..a*", false)]
+        [InlineData("a", ".*..", false)]
+        [InlineData("aaaaaaaaaaaaab", "a*a*a*a*a*a*a*a*a*b", true)]
+        [InlineData("aabcbcbcaccbcaabc", ".*a*aa*.*b*.c*.*a*", true)]
+        [InlineData("aabcbcbcaccbcaabc", ".*a.*", true)]
+        public void IsMatchTest(string s, string p, bool expected)
+        {
+            var actual = IsMatch(s, p);
+            Assert.Equal(expected, actual);
+        }
+
     }
 }
