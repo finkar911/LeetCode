@@ -174,5 +174,14 @@ namespace LeetCodeTests
             Assert.Equal(expected, actual);
         }
 
+        [Theory]
+        [InlineData(new int[] { 10, 15, 20 }, 15)]
+        [InlineData(new int[] { 1, 100, 1, 1, 1, 100, 1, 1, 100, 1 }, 6)]
+        public void MinCostClimbingStairsTest(int[] nums, int expected)
+        {
+            int actual = MinCostClimbingStairs(nums);
+            Assert.Equal(expected, actual);
+        }
+
     }
 }

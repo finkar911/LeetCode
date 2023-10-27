@@ -1179,8 +1179,7 @@ namespace LeetCode
         }
 
         public static int ClimbStairsRec7mc(int n)
-        {
-            
+        {            
             if (cachpairs.ContainsKey(n))
             {
                 return cachpairs[n];
@@ -1318,7 +1317,32 @@ namespace LeetCode
         }
         #endregion
 
-        #region 18
+        #region 18 https://leetcode.com/problems/min-cost-climbing-stairs/?envType=study-plan-v2&envId=dynamic-programming
+        public static int MinCostClimbingStairs(int[] cost)
+        {
+            if (cachpairs.ContainsKey(n))
+            {
+                return cachpairs[n];
+            }
+
+            int result = 0;
+
+            if (n == 1)
+            {
+                result = 1;
+            }
+            else if (n == 2)
+            {
+                result = 2;
+            }
+            else
+            {
+                result = ClimbStairsRec7mc(n - 1) + ClimbStairsRec7mc(n - 2);
+            }
+
+            cachpairs[n] = result;
+            return result;
+        }
 
         #endregion
 

@@ -683,3 +683,12 @@ select  sell_date as "sell_date",
 FROM ( select distinct * from Activities  ) t
 GROUP BY sell_date 
 order by sell_date
+
+----Valid Email------------
+select user_id,name,mail from (
+Select *, Replace(mail,'@leetcode.com','') newmail from Users where 
+mail like '%@leetcode.com'
+)t
+where newmail like '[a-zA-Z]%'
+AND newmail NOT LIKE '%[^a-zA-Z0-9._-]%'
+--and newmail not like '%[`/\|&@#,:;!?^$()+=<>*%*]%'
