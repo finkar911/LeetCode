@@ -1318,8 +1318,36 @@ namespace LeetCode
         #endregion
 
         #region 18 https://leetcode.com/problems/min-cost-climbing-stairs/?envType=study-plan-v2&envId=dynamic-programming
-        public static int MinCostClimbingStairs(int[] cost)
+        public static int MinCostClimbingStairs(int[] cost, int step = -1)
         {
+            if (cachpairs.ContainsKey(step))
+            {
+                return cachpairs[step];
+            }
+
+            int result = 0;
+
+            if (step >= cost.Length)
+            {
+                result = 0;
+            }            
+            else
+            {
+                if (step < 0)
+                {
+                    result = 0;
+                }
+                else
+                {
+                    result = cost[step];
+                }
+                result += Math.Min(MinCostClimbingStairs(cost,step + 1), MinCostClimbingStairs(cost,step + 2));
+            }
+
+            cachpairs[step] = result;
+
+            return result;
+            /*
             if (cachpairs.ContainsKey(n))
             {
                 return cachpairs[n];
@@ -1342,12 +1370,107 @@ namespace LeetCode
 
             cachpairs[n] = result;
             return result;
+            */
+        }
+
+        public static int MinCostClimbingStairsFast(int[] cost)
+        {
+            int n = cost.Length;
+            int first = cost[0];
+            int second = cost[1];
+            if (n <= 2) return Math.Min(first, second);
+            for (int i = 2; i < n; i++)
+            {
+                int curr = cost[i] + Math.Min(first, second);
+                first = second;
+                second = curr;
+            }
+            return Math.Min(first, second);
         }
 
         #endregion
 
-        #region 19
+        #region 19 https://leetcode.com/problems/house-robber/?envType=study-plan-v2&envId=dynamic-programming
+        public static int Rob(int[] nums)
+        {
+            int len = nums.Length;
+            if (len < 3)
+            {
+                //[ 1, 2, 3] любой 1 дом
+                int max = -1;
+                foreach (int n in nums)
+                {
+                    if (n > max)
+                        max = n;
+                }
+                return max;
+            }
 
+            int[] dp = new int[len];
+            dp[len - 1] = nums[len - 1];
+            dp[len - 2] = nums[len - 2];
+            for (int i = len - 3; i >= 0; i--) //Идем по каждому с конца
+            {
+                int max = dp[i + 1];
+                for (int j = i + 2; j < len; j++) //Пробегаем с текеущего до конца 
+                {
+                    max = Math.Max(max, nums[i] + dp[j]);
+                }
+                dp[i] = max;
+            }
+            return dp[0];
+        }
+
+        public static int RobMy(int[] nums, int step =-1)
+        {
+            if (cachpairs.ContainsKey(step))
+            {
+                return cachpairs[step];
+            }
+
+            int result = 0;
+
+            if (step >= nums.Length)
+            {
+                result = 0;
+            }
+            else
+            {
+                if (step < 0)
+                {
+                    result = 0;
+                    result += Math.Max(Math.Max(RobMy(nums, step + 1), RobMy(nums, step + 2)), RobMy(nums, step + 3));
+                }
+                else
+                {
+                    result = nums[step];
+                    result += Math.Max(RobMy(nums, step + 2), RobMy(nums, step + 3));
+                }                
+            }
+
+            cachpairs[step] = result;
+
+            return result;
+        }
+
+        public static int RobOld(int[] nums)
+        {
+            int d = 0;
+            int p = 0;
+            for (int i = 0; i < nums.Length; i++)
+            {
+                if (i == 0 || i % 2 == 0)
+                {
+                    d += nums[i];
+                }
+                else
+                {
+                    p += nums[i];
+                }
+            }
+
+            return Math.Max(d, p);
+        }
         #endregion
 
         #region 20
