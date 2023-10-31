@@ -1473,8 +1473,33 @@ namespace LeetCode
         }
         #endregion
 
-        #region 20
+        #region 20 https://leetcode.com/problems/delete-and-earn/?envType=study-plan-v2&envId=dynamic-programming
+        public static int DeleteAndEarn(int[] nums)
+        {
+            int result = 0;
+            Dictionary<int, int> pointCount = new Dictionary<int, int>();
+            foreach (var i in nums)
+            {
+                if (pointCount.ContainsKey(i))
+                {
+                    pointCount[i] += i;
+                }
+                else
+                {
+                    pointCount.Add(i,i);
+                }
+            }
 
+            Dictionary<int, int> sortedPointCount = pointCount.OrderBy(x => x.Key).ToDictionary(x => x.Key,x=> x.Value);
+
+            foreach (var point in sortedPointCount.Keys)
+            {
+                //Нахуй -> sortedPointCount[point-1], sortedPointCount[point + 1]
+                //Начинаем с 0. 1. 2 ключа 
+            }
+
+            return result;
+        }
         #endregion
 
         #region 21

@@ -190,7 +190,16 @@ namespace LeetCodeTests
         [InlineData(new int[] { 2, 7, 9, 3, 1 }, 12)]
         public void RobTest(int[] nums, int expected)
         {
-            int actual = Rob(nums); //MinCostClimbingStairsFast
+            int actual = Rob(nums);
+            Assert.Equal(expected, actual);
+        }
+
+        [Theory]
+        [InlineData(new int[] { 3, 4, 2 }, 6)]
+        [InlineData(new int[] { 2, 2, 3, 3, 3, 4 }, 9)]
+        public void DeleteAndEarnTest(int[] nums, int expected)
+        {
+            int actual = DeleteAndEarn(nums);
             Assert.Equal(expected, actual);
         }
 
