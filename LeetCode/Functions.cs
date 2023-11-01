@@ -2,12 +2,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.Linq;
 using System.Reflection.Metadata.Ecma335;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using static System.ComponentModel.Design.ObjectSelectorEditor;
 using static System.Net.Mime.MediaTypeNames;
 using static System.Windows.Forms.AxHost;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
@@ -1474,7 +1476,39 @@ namespace LeetCode
         #endregion
 
         #region 20 https://leetcode.com/problems/delete-and-earn/?envType=study-plan-v2&envId=dynamic-programming
+
         public static int DeleteAndEarn(int[] nums)
+        {
+            int n = nums.Length;
+
+            Dictionary<int, int> map = new();
+            int maxNumber = 0;
+            for (int i = 0; i < n; i++)
+            {
+                maxNumber = Math.Max(nums[i], maxNumber);
+                if (map.ContainsKey(nums[i]))
+                {
+                    map[nums[i]] += 1;
+                }
+                else
+                {
+                    map.Add(nums[i], 1);
+                }
+            }
+
+            int[] dp = new int[maxNumber + 1];
+            dp[0] = 0;
+            dp[1] = map.ContainsKey(1) ? map[1] : 0;
+
+            for (int i = 2; i <= maxNumber; i++)
+            {
+                int points = i * (map.ContainsKey(i) ? map[i] : 0);
+                dp[i] = Math.Max(dp[i - 1], points + dp[i - 2]);
+            }
+            return dp[maxNumber];
+        }
+
+        public static int DeleteAndEarnMy(int[] nums)
         {
             int result = 0;
             Dictionary<int, int> pointCount = new Dictionary<int, int>();
@@ -1490,15 +1524,52 @@ namespace LeetCode
                 }
             }
 
-            Dictionary<int, int> sortedPointCount = pointCount.OrderBy(x => x.Key).ToDictionary(x => x.Key,x=> x.Value);
+            List<int> sortedPointCount = pointCount.OrderBy(x => x.Key).Select(k=>k.Key).ToList();
 
-            foreach (var point in sortedPointCount.Keys)
-            {
-                //Нахуй -> sortedPointCount[point-1], sortedPointCount[point + 1]
-                //Начинаем с 0. 1. 2 ключа 
-            }
+            int si1 = RecEarn(pointCount, sortedPointCount, 0);
+            int si2 = RecEarn(pointCount, sortedPointCount, 1);
+            int si3 = RecEarn(pointCount, sortedPointCount, 2);
+
+            result += Math.Max(si1, Math.Max(si2, si3));
 
             return result;
+        }
+
+        public static int RecEarn(Dictionary<int, int> pointCount, List<int> sortedPointCount, int point)
+        {
+            if (cachpairs.ContainsKey(point))
+            {
+                return cachpairs[point];
+            }
+
+            if (sortedPointCount.Count <= point)
+            {
+                return 0;
+            }
+
+            int result = 0;
+            int currKey = sortedPointCount[point];
+
+            result = pointCount[currKey];
+            if (sortedPointCount.Count <= point + 1 || currKey + 1 == sortedPointCount[point + 1])
+            {
+                int i2 = RecEarn(pointCount, sortedPointCount, point + 2);
+                int i3 = RecEarn(pointCount, sortedPointCount, point + 3);
+                result += Math.Max(i2, i3);
+            }
+            else
+            {
+                int i1 = RecEarn(pointCount, sortedPointCount, point + 1);
+                int i2 = RecEarn(pointCount, sortedPointCount, point + 2);
+                int i3 = RecEarn(pointCount, sortedPointCount, point + 3);
+
+                result += Math.Max(i1, Math.Max(i2, i3));
+            }
+
+            cachpairs[point] = result;
+
+            return result;
+        
         }
         #endregion
 
