@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Reflection.Metadata.Ecma335;
+using System.Runtime.Intrinsics.Arm;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -16,7 +17,7 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace LeetCode
 {
-    
+
     public static class Functions
     {
         static Dictionary<int, int> cachpairs = new Dictionary<int, int>();
@@ -118,9 +119,9 @@ namespace LeetCode
 
             nuber /= 10;
 
-            while (nuber>0)
+            while (nuber > 0)
             {
-                summ= (nuber % 10) + summ * 10;
+                summ = (nuber % 10) + summ * 10;
                 nuber /= 10;
             }
 
@@ -144,7 +145,7 @@ namespace LeetCode
         {
             ///51ms
             //Beats 8.59 %
-                        string stx = x.ToString();
+            string stx = x.ToString();
             for (int i = 0; i < stx.Length; i++)
             {
                 if (stx[i] != stx[stx.Length - 1 - i])
@@ -157,13 +158,13 @@ namespace LeetCode
         #endregion
 
         #region 3 https://leetcode.com/problems/palindrome-number/description/
-        public static int Roman_to_Int(string s) 
+        public static int Roman_to_Int(string s)
         {
             ///55ms
             ///Beats 95.58 %
             int count = 0;
             Dictionary<char, int> rom = new Dictionary<char, int>();
-            rom.Add('I',1);
+            rom.Add('I', 1);
             rom.Add('V', 5);
             rom.Add('X', 10);
             rom.Add('L', 50);
@@ -172,8 +173,8 @@ namespace LeetCode
             rom.Add('M', 1000);
             int currMax = 0;
 
-            for (int i = s.Length-1; i >= 0; i--)
-            {          
+            for (int i = s.Length - 1; i >= 0; i--)
+            {
                 if (rom.ContainsKey(s[i]))
                 {
                     int toAdd = rom[s[i]];
@@ -206,7 +207,7 @@ namespace LeetCode
 
         #region 5 https://leetcode.com/problems/running-sum-of-1d-array/description/
         public static int[] RunningSum(int[] nums)
-        {          
+        {
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
             int[] data = new int[nums.Length];
@@ -226,14 +227,14 @@ namespace LeetCode
                 ///124ms
                 ///Beats 82.93%
                 ///5ms     
-                
+
                 int sum = 0;
                 for (int i = 0; i < nums.Length; i++)
                 {
                     sum += nums[i];
                     data[i] = sum;
                 }
-                
+
 
             }
             stopWatch.Stop();
@@ -246,7 +247,7 @@ namespace LeetCode
         #endregion
 
         #region 6 https://leetcode.com/problems/find-first-and-last-position-of-element-in-sorted-array/description
-        public static int[] Firas_Last_pose_sorted_Arr(int[] nums, int target) 
+        public static int[] Firas_Last_pose_sorted_Arr(int[] nums, int target)
         {
             /*
             129 ms
@@ -258,12 +259,12 @@ namespace LeetCode
             */
             int start = 0;
             int end = nums.Length - 1;
-            int[] result = new int[] { -1 , -1};
+            int[] result = new int[] { -1, -1 };
             while (start <= end)
             {
                 int mid = (end + start) / 2;
                 int numi = nums[mid];
-                if (numi == target) 
+                if (numi == target)
                 {
                     result[0] = mid;
                     result[1] = mid;
@@ -274,7 +275,7 @@ namespace LeetCode
                         {
                             result[0] = currId;
                         }
-                        else 
+                        else
                         {
                             break;
                         }
@@ -297,11 +298,11 @@ namespace LeetCode
                 }
                 else if (numi > target)
                 {
-                    end = mid-1;
+                    end = mid - 1;
                 }
                 else if (numi < target)
                 {
-                    start = mid+1;
+                    start = mid + 1;
                 }
             }
             return result;
@@ -347,9 +348,10 @@ namespace LeetCode
                         i++;
                     }
                 }
-                else 
+                else
                 {
-                    if (ints1.Count > 0) {
+                    if (ints1.Count > 0)
+                    {
                         newArr[i] = ints1[0];
                         ints1.RemoveAt(0);
                     }
@@ -385,9 +387,10 @@ namespace LeetCode
 
             if (fullLength % 2 == 0)
             {
-                ress = ((double)(newArr[fullLength / 2 - 1] + newArr[fullLength / 2]) / 2.0 );
+                ress = ((double)(newArr[fullLength / 2 - 1] + newArr[fullLength / 2]) / 2.0);
             }
-            else {
+            else
+            {
                 ress = newArr[fullLength / 2];
             }
 
@@ -457,7 +460,7 @@ namespace LeetCode
 
             //if (lists is null || lists.Length == 0) return null;
 
-            Dictionary<int, int> dic = new Dictionary<int, int>();            
+            Dictionary<int, int> dic = new Dictionary<int, int>();
 
             foreach (var item in lists)
             {
@@ -471,9 +474,9 @@ namespace LeetCode
 
             string txt = "";
 
-            ListNode result=null;
+            ListNode result = null;
 
-            for (int ii = dic.Count-1; ii >= 0; ii--)
+            for (int ii = dic.Count - 1; ii >= 0; ii--)
             {
                 var item = dic.ElementAt(ii);
                 for (int i = 0; i < item.Value; i++)
@@ -482,7 +485,8 @@ namespace LeetCode
                     {
                         result = new ListNode(item.Key);
                     }
-                    else {
+                    else
+                    {
                         result = new ListNode(item.Key, result);
                     }
                     txt += item.Key + ",";
@@ -503,20 +507,21 @@ namespace LeetCode
             return true;
         }
 
-        public static void NodeTodick(Dictionary<int, int> dic, ListNode l) {
-                if (!dic.ContainsKey(l.val))
-                {
-                    dic.Add(l.val, 1);
-                }
-                else
-                {
-                    dic[l.val]++;
-                }
+        public static void NodeTodick(Dictionary<int, int> dic, ListNode l)
+        {
+            if (!dic.ContainsKey(l.val))
+            {
+                dic.Add(l.val, 1);
+            }
+            else
+            {
+                dic[l.val]++;
+            }
 
-                if (l.next != null)
-                {
-                    NodeTodick(dic, l.next);
-                }           
+            if (l.next != null)
+            {
+                NodeTodick(dic, l.next);
+            }
         }
 
         public class ListNode
@@ -529,18 +534,20 @@ namespace LeetCode
                 this.next = next;
             }
 
-            public void toList(Dictionary<int, int> dic) {
+            public void toList(Dictionary<int, int> dic)
+            {
                 //List<int> list = new List<int>();
                 //list.Add(val);
                 if (!dic.ContainsKey(val))
                 {
                     dic.Add(val, 1);
                 }
-                else {
+                else
+                {
                     dic[val]++;
                 }
 
-                if (next != null) 
+                if (next != null)
                 {
                     next.toList(dic);
                 }
@@ -619,7 +626,7 @@ namespace LeetCode
 
         #region 10 CodeWars Phone Number
         public static string PhoneNumber(int[] numbers)
-        { 
+        {
             StringBuilder sb = new StringBuilder();
             sb.Append("(");
             for (int i = 0; i < 10; i++)
@@ -657,7 +664,7 @@ namespace LeetCode
         #region 12 CodeWars ( and )
         public static string ReplaseCharrWithBread(string str)
         {
-            Dictionary<string,int> keyValuePairs = new Dictionary<string, int>();
+            Dictionary<string, int> keyValuePairs = new Dictionary<string, int>();
             StringBuilder sb = new StringBuilder();
             foreach (var item in str)
             {
@@ -671,7 +678,7 @@ namespace LeetCode
                 {
                     keyValuePairs[rchar]++;
                 }
-                    
+
             }
             foreach (var item in str)
             {
@@ -707,7 +714,7 @@ namespace LeetCode
                 return true;
             }
 
-            if (n <= 0 || n % 4 != 0 )
+            if (n <= 0 || n % 4 != 0)
             {
                 return false;
             }
@@ -740,7 +747,7 @@ namespace LeetCode
                 '.' Matches any single character.​​​​
                 '*' Matches zero or more of the preceding element.
             */
-            return IsMatchHelper(s,p,s.Length-1,p.Length-1);
+            return IsMatchHelper(s, p, s.Length - 1, p.Length - 1);
             //return IsMatchRec(s,p,s.Length-1,p.Length-1);
             //return Var2(s, p);
             //return Var1(s, p);
@@ -750,7 +757,7 @@ namespace LeetCode
         {
             if (si < 0)
             {
-                if ( pi % 2 == 0)
+                if (pi % 2 == 0)
                 {
                     for (int i = 1; i < pi; i += 2)
                     {
@@ -766,7 +773,7 @@ namespace LeetCode
                     return false;
                 }
             }
-            else 
+            else
             {
                 if (pi < 0)
                 {
@@ -911,7 +918,7 @@ namespace LeetCode
                         }
                     }
                 }
-                else 
+                else
                 {
                     break;
                 }
@@ -938,7 +945,7 @@ namespace LeetCode
                             return false;
                         }
                     }
-                    else 
+                    else
                     {
                         break;
                     }
@@ -976,7 +983,7 @@ namespace LeetCode
                     toFind = sc[0];
                 }
                 //Убираем крайниее *
-                if ((pc[0] != toFind && pc[0]!='.') && pc.Length > 1 && pc[1] == '*')
+                if ((pc[0] != toFind && pc[0] != '.') && pc.Length > 1 && pc[1] == '*')
                 {
                     newl = 2;
                 }
@@ -1010,7 +1017,7 @@ namespace LeetCode
             int pcSameChCount = 0;
             int sameChCount = 0;
             //Проход по нужному *
-            if (pc.Length > 1 && toFind !=' ')
+            if (pc.Length > 1 && toFind != ' ')
             {
                 if ((pc[0] == toFind || pc[0] == '.') && pc[1] == '*')
                 {
@@ -1077,14 +1084,14 @@ namespace LeetCode
             {
                 return true;
             }
-            else 
+            else
             {
                 return Var2(new string(sc), new string(pc));
             }
 
         }
 
-        public static bool Var1(string s, string p) 
+        public static bool Var1(string s, string p)
         {
             char[] sc = s.ToCharArray();
             char[] pc = p.ToCharArray();
@@ -1181,14 +1188,14 @@ namespace LeetCode
         }
 
         public static int ClimbStairsRec7mc(int n)
-        {            
+        {
             if (cachpairs.ContainsKey(n))
             {
                 return cachpairs[n];
             }
-            
+
             int result = 0;
-            
+
             if (n == 1)
             {
                 result = 1;
@@ -1197,8 +1204,8 @@ namespace LeetCode
             {
                 result = 2;
             }
-            else 
-            {            
+            else
+            {
                 result = ClimbStairsRec7mc(n - 1) + ClimbStairsRec7mc(n - 2);
             }
 
@@ -1209,10 +1216,10 @@ namespace LeetCode
         public static int ClimbStairsOld28s(int n)
         {
             int result = 0;
-            
-            result += MakeStep(1, n,0);
-            result += MakeStep(2, n,0);
-            
+
+            result += MakeStep(1, n, 0);
+            result += MakeStep(2, n, 0);
+
             //result +=  MakeStepAs(1, n, 0).Result;
             //result +=  MakeStepAs(2, n, 0).Result;
             return result;
@@ -1222,7 +1229,7 @@ namespace LeetCode
         {
             //44 = 28.3 s  28 29.2
             if (cachpairs.ContainsKey(start))
-            { 
+            {
                 return cachpairs[start];
             }
             int mewStep = start + step;
@@ -1261,7 +1268,7 @@ namespace LeetCode
         public static int Fib(int n)
         {
             int result = 0;
-            
+
             if (n == 0)
             {
                 return 0;
@@ -1332,7 +1339,7 @@ namespace LeetCode
             if (step >= cost.Length)
             {
                 result = 0;
-            }            
+            }
             else
             {
                 if (step < 0)
@@ -1343,7 +1350,7 @@ namespace LeetCode
                 {
                     result = cost[step];
                 }
-                result += Math.Min(MinCostClimbingStairs(cost,step + 1), MinCostClimbingStairs(cost,step + 2));
+                result += Math.Min(MinCostClimbingStairs(cost, step + 1), MinCostClimbingStairs(cost, step + 2));
             }
 
             cachpairs[step] = result;
@@ -1423,7 +1430,7 @@ namespace LeetCode
             return dp[0];
         }
 
-        public static int RobMy(int[] nums, int step =-1)
+        public static int RobMy(int[] nums, int step = -1)
         {
             if (cachpairs.ContainsKey(step))
             {
@@ -1447,7 +1454,7 @@ namespace LeetCode
                 {
                     result = nums[step];
                     result += Math.Max(RobMy(nums, step + 2), RobMy(nums, step + 3));
-                }                
+                }
             }
 
             cachpairs[step] = result;
@@ -1479,6 +1486,7 @@ namespace LeetCode
 
         public static int DeleteAndEarn(int[] nums)
         {
+            //9 6 5
             int n = nums.Length;
 
             Dictionary<int, int> map = new();
@@ -1520,11 +1528,11 @@ namespace LeetCode
                 }
                 else
                 {
-                    pointCount.Add(i,i);
+                    pointCount.Add(i, i);
                 }
             }
 
-            List<int> sortedPointCount = pointCount.OrderBy(x => x.Key).Select(k=>k.Key).ToList();
+            List<int> sortedPointCount = pointCount.OrderBy(x => x.Key).Select(k => k.Key).ToList();
 
             int si1 = RecEarn(pointCount, sortedPointCount, 0);
             int si2 = RecEarn(pointCount, sortedPointCount, 1);
@@ -1569,16 +1577,124 @@ namespace LeetCode
             cachpairs[point] = result;
 
             return result;
-        
+
         }
         #endregion
 
-        #region 21
+        #region 21 https://leetcode.com/problems/unique-paths/description/?envType=study-plan-v2&envId=dynamic-programming
+
+        public static int UniquePaths(int m, int n)
+        {
+            int[][] mat = new int[m][];
+
+            for (int i = 0; i < m; i++)
+            {
+                mat[i] = new int[n];
+            }
+
+            for (int i = 0; i < m; i++)
+            {
+                mat[i][0] = 1;
+            }
+
+            for (int i = 0; i < n; i++)
+            {
+                mat[0][i] = 1;
+            }
+
+            for (int i = 1; i < m; i++)
+            {
+                for (int j = 1; j < n; j++)
+                {
+                    mat[i][j] = mat[i - 1][j] + mat[i][j - 1];
+                }
+            }
+
+            return mat[m - 1][n - 1];
+        }
+        
+
+        static Dictionary<string, int> d = new Dictionary<string, int>();
+       
+        public static int UniquePathsMy(int m, int n)
+        {
+            if (m < 1 || n < 1)
+            {
+                return 0;
+            }
+
+            string str = m + "," + n;
+
+            if (d.ContainsKey(str))
+            {
+                return d[str];
+            }
+
+            int result = 0;
+
+            if (n == 1 && m == 1)
+            {
+                return 1;
+            }
+
+            result += UniquePaths(m - 1, n);
+            result += UniquePaths(m, n - 1);
+
+            d.Add(str, result);
+
+            return result;
+        }
 
         #endregion
 
-        #region 22
+        #region 22 https://leetcode.com/problems/minimum-path-sum/?envType=study-plan-v2&envId=dynamic-programming
+        static int min = 99999;
+        public static int MinPathSum(int[][] grid)
+        {
+            int m = grid.Length;
+            int n = grid[0].Length;
 
+            int result = MinPathSumRec(grid, m, n);
+
+            return result;
+        }
+
+        public static int MinPathSumRec(int[][] grid, int m, int n)
+        {
+            if (m < 1 || n < 1)
+            {
+                return 0;
+            }
+
+            string str = m + "," + n;
+
+            if (d.ContainsKey(str))
+            {
+                return d[str];
+            }
+
+            int result = 0;
+
+            if (n == 1 && m == 1)
+            {
+                result+= grid[m][n];
+            }
+
+            
+            result += Math.Min(MinPathSumRec(grid,m - 1, n), MinPathSumRec(grid,m, n - 1));
+            if (result < min)
+            {
+                min = result;
+            }
+            else 
+            {
+                result = min;
+            }
+
+            d.Add(str, result);
+
+            return result;
+        }
         #endregion
 
         #region 23
